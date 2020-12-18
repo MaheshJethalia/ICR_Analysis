@@ -5,11 +5,11 @@ require("parallel")
 
 #============================================================================================
 loading_data <- function(filename,M){
-  z <- readRDS(file=paste0("Data/",filename,"/TCGA-",filename,"_normcounts.rda"))
+  z <- readRDS(file=paste0("../Data/",filename,"/TCGA-",filename,"_normcounts.rda"))
   
   #Get the gene names and associate it with appropriate variables
   #====================================================================================
-  load("Data/Others/TF_Target_Info.Rdata")
+  load("../Data/Others/TF_Target_Info.Rdata")
   tfs <- tf_gene_names;
   targets <- target_gene_names;
   rownames(z) <- target_gene_names;
@@ -41,10 +41,29 @@ loading_data <- function(filename,M){
   return(list(modified_exp_matrix,K,g_M,tf_genes,target_genes));
 }
 
+#===========================================================================================
+get_high_low_indices <- function(table_cluster_assignment, D){
+  
+  #Function to get all the ICR High and ICR low samples (i.e. phenotype information from TCGA)
+  tcga_sample_ids <- rownames(table_cluster_assignment)
+  unmatched_tcga_sample_ids <- colnames(D);
+  filter_samples <- which(unmatched_tcga_sample_ids %in% tcga_sample_ids);
+  D <- D[,filter_samples];
+  order_indices <- NULL
+  for (i in 1:length(unmatched_tcga_sample_ids))
+  {
+    order_indices <- c(order_indices,which(tcga_sample_ids==unmatched_tcga_sample_ids[i]));
+  }
+  table_cluster_assignment <- table_cluster_assignment[order_indices,];
+  high_indices <- which(table_cluster_assignment$HML_cluster=="ICR High")
+  low_indices <- which(table_cluster_assignment$HML_cluster=="ICR Low")
+  return(list(table_cluster_assignment,high_indices,low_indices,D))
+}
 
 #===========================================================================================
 parcor <- function(Mat) { 
   
+  #Calculate correlation matrix in parallel
   require(parallel) 
   nc <- detectCores() 
   m <- dim(Mat)[1] 
@@ -58,37 +77,6 @@ parcor <- function(Mat) {
   return(out)
 }
 
-#===========================================================================================
-#Get regulons for each candidate master regulator
-constructRegulon2 <- function(net, corNet, minReg = 20){
-  net <- net[rowSums(net != 0) > minReg, ]
-  netReg2 <- vector("list", nrow(net))
-  names(netReg2) <- rownames(net)
-  toKeep <- NULL
-  for(k in 1:nrow(net)){
-    tf <- rownames(net)[k]
-    #print(tf)
-    reg <- colnames(net[tf, net[tf, ] != 0, drop = F])
-    reg <- reg[reg %in% colnames(corNet)]
-    tmp <- corNet[tf, reg, drop = F]
-    
-    pos <- colnames(tmp[1, tmp[1, ] > 0, drop = F])
-    neg <- colnames(tmp[1, tmp[1, ] < 0, drop = F])
-    
-    if(length(pos) < minReg & length(neg) < minReg) next
-    if(length(pos) <= 1) pos <- c("dummy","dummy")
-    if(length(neg) <= 1) neg <- c("dummy","dummy")
-    
-    toKeep <- c(toKeep, k)
-    netReg2[[k]] <- vector("list", 2)
-    names(netReg2[[k]]) <- c("pos", "neg")
-    netReg2[[k]]$pos <- pos
-    netReg2[[k]]$neg <- neg
-  }
-  netReg2 <- netReg2[toKeep]
-  print(length(netReg2))
-  return(netReg2)
-}
 
 #==========================================================================================
 get_regulons <- function(net,corr_matrix,minsize=20){
@@ -109,9 +97,40 @@ get_regulons <- function(net,corr_matrix,minsize=20){
   return(regulons)
 }
 
+#====================================================================================================
+get_viper_network <- function(net, minsize)
+{
+  #Prepare the 3 column sparse gene regulatory network for Viper
+  net_sparse <- as(as.matrix(net), "dgCMatrix")
+  net_df <- as.data.frame(summary(net_sparse))
+  net_df$TF <- rownames(net_sparse)[net_df$i]
+  net_df$Target <- colnames(net_sparse)[net_df$j]
+  net_df <- net_df[,-c(1,2)]
+  net_df <- net_df[,c(2,3,1)]
+  colnames(net_df) <- c("TF","Target","MI")
+  revised_net_df <- NULL
+  
+  #Filtering based on Minimum no of targets regulated by a TF
+  for (tf in tfs)
+  {
+    temp_edges <- net_df[net_df$TF==tf,]
+    if (nrow(temp_edges)>minsize)
+    {
+      revised_net_df <- rbind(revised_net_df,temp_edges)
+    }
+  }
+  revised_net_df <- as.data.frame(revised_net_df)
+  colnames(revised_net_df) <- c("TFs","Targets","Weight")
+  revised_net_df$TFs <- as.character(as.vector(revised_net_df$TFs))
+  revised_net_df$Targets <- as.character(as.vector(revised_net_df$Targets))
+  revised_net_df$Weight <- as.numeric(as.vector(revised_net_df$Weight))
+  return(revised_net_df)
+}
+
+
 #==========================================================================================
 #Perform wilcox test on two expression matrices for two cases using identified tfs
-perform_wilcox_test <- function(A,B)
+perform_wilcox_test <- function(A,B,exact=FALSE)
 {
   genes <- rownames(A);
   wilcox_test_info <- NULL;
@@ -151,7 +170,8 @@ activity_mc <- function(mexp,cormat,tflist=NULL,tau=0.6) {
   if (is.null(tflist)) {
     tflist=rownames(cormat)
   }
-  actmat = mexp[tflist,]
+  
+  actmat = mexp.s[tflist,]
   actmat[1:length(actmat)]=0
   pb = txtProgressBar(min=1,max=length(tflist),style=3)
   i=1
@@ -183,7 +203,53 @@ activity_mc <- function(mexp,cormat,tflist=NULL,tau=0.6) {
   return(actmat)
 }
 
+#==========================================================================================
+#Get the activity matrix considering tumor purity
+activity_mc_with_purity <- function(mexp,cormat,tflist=NULL,tau=0.6,purity) {
+  
+  mexp.s = mexp * purity
+  for(i in 1:nrow(mexp.s)){
+    #mexp.s[i,] = (mexp.s[i,] - mean(mexp[i,]))/sd(mexp.s[i,])
+    mexp.s[i,] = (mexp.s[i,]-mean(mexp[i,]));
+  }
+  if (is.null(tflist)) {
+    tflist=rownames(cormat)
+  }
+  actmat = mexp.s[tflist,]
+  actmat[1:length(actmat)]=0
+  pb = txtProgressBar(min=1,max=length(tflist),style=3)
+  i=1
+  for(tfi in tflist) {
+    postrg = names(cormat[tfi,cormat[tfi,] > tau])
+    negtrg= names(cormat[tfi,cormat[tfi,] < -tau])
+    if (length(postrg)>1 & length(negtrg)>1) {
+      apos = apply(mexp.s[postrg,,drop=F],2,sum)/length(postrg)
+      aneg = apply(mexp.s[negtrg,,drop=F],2,sum)/length(negtrg)
+      actmat[tfi,] =  apos - aneg
+    } 
+    else if (length(postrg)>1 & length(negtrg)<=1)
+    {
+      actmat[tfi,] = 1;
+    }
+    else if (length(postrg)<=1 & length(negtrg)>1)
+    {
+      actmat[tfi,] = -1;
+    }
+    else
+    {
+      actmat[tfi,] = 0;
+    }
+    
+    setTxtProgressBar(pb, i)
+    i=i+1
+    
+  }
+  return(actmat)
+}
+
+
 #===========================================================================================
+#Another function to create regulons given adjacency matrix of regulatory network, correlation matrix between TF-target and minsize
 createRegulons <- function(net,ccor,minsize=20)
 {
   regulon <- vector("list",nrow(net))
@@ -204,6 +270,7 @@ createRegulons <- function(net,ccor,minsize=20)
 }
 
 #============================================================================================
+#Infer gene regulatory network using ARACNE type approach
 massiveGST <- function(rrnk, GGO, alternative = "greater", keepDetails = FALSE, 
                        writeXLS = FALSE, fName = "massiveGST.xls") {
   size <- length(GGO)
@@ -288,6 +355,7 @@ massiveExtGst <- function (rankedList, geneSetUp, geneSetDown, minLenGeneSet = 1
 
 
 #=============================================================================================
+#Compute activity based on network inferred using the massiveGST
 computeActivity <- function(net,E,regulons,ncores=16){
   M<- apply(E,1,mean)
   E <- E-M

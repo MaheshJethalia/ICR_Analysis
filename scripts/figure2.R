@@ -237,7 +237,7 @@ p2 <- ggplot(output_df, aes(x = NES, y = -log10(Padj),
             data=temp_df, 
             hjust = 0, vjust = 0, nudge_x = 0.01, angle = 45,
             size = 4, check_overlap = T) +
-  ggtitle("Significance vs NES for TR activities") + theme(text = element_text(size=16,color="black")) + theme(axis.text = element_text(size=14, color="black")) + theme(plot.title = element_text(hjust = 0.5,color="black")) + coord_fixed(ratio=0.7)
+  ggtitle("Significance vs NES for TF activities") + theme(text = element_text(size=16,color="black")) + theme(axis.text = element_text(size=14, color="black")) + theme(plot.title = element_text(hjust = 0.5,color="black")) + coord_fixed(ratio=0.7)
 ggsave(file="Results/Figures/Volcano_Plot_TF_Activity_2B.pdf",plot = p2, device = pdf(), width = 12, height=10, units = "in", dpi = 300)
 dev.off()
 
@@ -253,9 +253,9 @@ t_supp_df[t_supp_df$NES>0,]$"NES_Eff" <- "NES>0"
 t_supp_df[t_supp_df$NES<=0,]$"NES_Eff" <- "NES<0"
 
 p_supp <- ggplot(t_supp_df, aes(x=NES_Eff,y=value, fill=ICR )) + geom_boxplot(position = position_dodge(0.9), outlier.alpha = 0.1 ) +
-          scale_fill_manual(name="ICR Phenotype" ,values = c("yellow", "green")) + xlab("Categorized NES") + ylab("Avg TR Activities")+
+          scale_fill_manual(name="ICR Phenotype" ,values = c("yellow", "green")) + xlab("Categorized NES") + ylab("Avg TF Activities")+
           theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + ylim(c(-0.75,0.5)) +
-          ggtitle("NES based classification of TRs") + theme(text = element_text(size=16)) + theme(plot.title = element_text(hjust = 0.5)) +
+          ggtitle("NES based classification of TFs") + theme(text = element_text(size=16)) + theme(plot.title = element_text(hjust = 0.5)) +
           geom_text(x=1,y=0.5,label="****",col="red") + geom_text(x=2,y=0.5,label="****",col="red")
 ggsave(file="Results/Figures/Supp_Figure2.jpg",plot=p_supp,device=jpeg(),width=12,height=10,units="in",dpi=300)
 dev.off()
@@ -292,7 +292,7 @@ p3 <- ggplot(output_df, aes(x = Avg_ICR_High, y = Avg_ICR_Low,
             data=temp_df,
             hjust = 0, vjust = 0, nudge_x = 0.01, angle = 45,
             size = 4, check_overlap = T,color="black") +
-  ggtitle("Average TR Activity for ICR High vs ICR Low Phenotype") + theme(text = element_text(size=16,color="black")) + theme(axis.text = element_text(size=14, color="black")) + theme(plot.title = element_text(hjust = 0.5,color="black")) + coord_fixed(ratio=0.7)
+  ggtitle("Average TF Activity for ICR High vs ICR Low Phenotype") + theme(text = element_text(size=16,color="black")) + theme(axis.text = element_text(size=14, color="black")) + theme(plot.title = element_text(hjust = 0.5,color="black")) + coord_fixed(ratio=0.7)
 ggsave(file="Results/Figures/Pdfs/Avg_TF_Activity_Figure2C.pdf",plot = p3, device = pdf(), width = 12, height=10, units = "in", dpi = 300)
 dev.off()
 

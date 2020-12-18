@@ -167,7 +167,7 @@ pdf("Results/Figures/BLCA_TF_Activity_Figure_1D.pdf",width=12,height=12,pointsiz
 par(bg="white")
 par(fg="black",col.axis="black",col.main="black",col.lab="black", cex.main=2.0, cex = 2.5)
 heatmap.3(amat.pheno[hc.rows$order,hc.cols$order], Rowv = NULL, Colv = NULL, col = bluered(50), scale="none", main= "TF Regulon Activity Matrix",
-          xlab = "TCGA Samples", ylab = "TRs", labRow = FALSE, labCol = FALSE, dendrogram = "none", cexRow=6, cexCol=6,
+          xlab = "TCGA Samples", ylab = "TFs", labRow = FALSE, labCol = FALSE, dendrogram = "none", cexRow=6, cexCol=6,
           key = TRUE, density.info = "none", KeyValueName = "Activity Value",
           margins = c(2,2), useRaster = TRUE)
 dev.off()

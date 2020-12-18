@@ -1,0 +1,47 @@
+P-value & P-adj value & Complex Name & Source & Gene Names & Gene Ids & Size & Effective Size 
+1.00E-05 & 0.00017 & PDPK1:PIP3:PKC zeta & Reactome & PDPK1; PRKCZ & 5170; 5590 & 2 & 2\\ \hline
+0.00022 & 0.00112 & Brg1-associated complex II & CORUM & SMARCC2; PRMT5 & 6601; 10419 & 7 & 7\\ \hline
+0.00092 & 0.00134 & emerin C32 & PINdb & SMARCC2; RCOR1 & 6601; 23186 & 14 & 14\\ \hline
+0.00171 & 0.00182 & AF4.com & PINdb & CCNT2; HEXIM2 & 905; 124790 & 20 & 19\\ \hline
+ &  &  &  &  &  &  & \\ 
+0 & 5.00E-05 & IRF1 and IRF9 complex with the CXCL10 promoter & InnateDB & CXCL10; IRF1; IRF9 & 3627; 3659; 10379 & 3 & 3\\ \hline
+0 & 5.00E-05 & ISGF3 & Reactome & IRF9; STAT2; STAT1 & 6772; 6773; 10379 & 3 & 3\\ \hline
+0 & 5.00E-05 & DTX3L-PARP9-STAT1 complex & CORUM & DTX3L; PARP9; STAT1 & 6772; 83666; 151636 & 3 & 3\\ \hline
+5.00E-05 & 0.00071 & STAT dimer_Yp & INOH & STAT4; STAT2; STAT1 & 6772; 6773; 6775 & 7 & 7\\ \hline
+8.00E-05 & 0.00071 & p-T611 & S730 & S739-FOXM1:MuvB:MYBL2:PLK1 Gene & Reactome & PLK1; MYBL2; FOXM1 & 2305; 4605; 5347 & 8 & 8\\  \hline
+0.00012 & 0.00071 & 26S proteasome & Reactome & PSMB10; PSME2; PSME1; PSMB9; PSMB8 & 5696; 5698; 5699; 5720; 5721 & 42 & 42\\ \hline
+0.00013 & 0.00071 & CD4:IL16(1212-1332) & Reactome & CD4; IL16 & 920; 3603 & 2 & 2\\ \hline
+0.00013 & 0.00071 & CD28:B7-2 & Reactome & CD28; CD86 & 940; 942 & 2 & 2\\ \hline
+0.00013 & 0.00071 & p-T611 & S730 & S739-FOXM1:CENPF Gene & Reactome & CENPF; FOXM1 & 1063; 2305 & 2 & 2\\ \hline
+0.00013 & 0.00071 & p-T611-FOXM1:p-T210-PLK1 & Reactome & PLK1; FOXM1 & 2305; 5347 & 2 & 2\\ \hline
+0.00013 & 0.00071 & IRF3-P:IRF7-P & Reactome & IRF3; IRF7 & 3661; 3665 & 2 & 2\\ \hline
+0.00013 & 0.00071 & HAVCR2:LGALS9 & Reactome & LGALS9; HAVCR2 & 3965; 84868 & 2 & 2\\ \hline
+0.00013 & 0.00071 & p100:RELB & Reactome & RELB; NFKB2 & 4791; 5971 & 2 & 2\\ \hline
+0.00013 & 0.00071 & PA28 complex & CORUM & PSME2; PSME1 & 5720; 5721 & 2 & 2\\ \hline
+0.00013 & 0.00071 & S100A8:S100A9:Ca2+ & Reactome & S100A9; S100A8 & 6279; 6280 & 2 & 2\\ \hline
+0.00013 & 0.00071 & p-STAT2:p-STAT1 & Reactome & STAT2; STAT1 & 6772; 6773 & 2 & 2\\ \hline
+0.00013 & 0.00071 & p-Y693-STAT4:p-Y701-STAT1 & Reactome & STAT4; STAT1 & 6772; 6775 & 2 & 2\\ \hline
+0.00013 & 0.00071 & TLR6:TLR2 & Reactome & TLR2; TLR6 & 7097; 10333 & 2 & 2\\ \hline
+0.00013 & 0.00071 & DTX3L-PARP9 complex & CORUM & DTX3L; PARP9 & 83666; 151636 & 2 & 2\\ \hline
+0.00023 & 0.0008 & TCR/CD3/MHC II/CD4/LCK/ZAP-70/CBL/SLAP-2/Ubiquitin & PID & CD4; SLA2; CD3D & 915; 920; 84174 & 13 & 11\\ \hline
+0.0004 & 0.0008 & Chromosomal passenger complex CPC (INCENP &  BIRC5 &  AURKB) & CORUM & BIRC5; AURKB & 332; 9212 & 3 & 3\\ \hline
+0.0004 & 0.0008 & FASLG/FAS (trimer)/Btk & PID & FASLG; BTK & 356; 695 & 3 & 3\\ \hline
+0.0004 & 0.0008 & E2F1-p107-cyclinA complex & CORUM & CCNA2; E2F1 & 890; 1869 & 3 & 3\\  \hline
+0.0004 & 0.0008 & alphaM/beta2 Integrin/CD40L & PID & ITGB2; CD40LG & 959; 3689 & 3 & 3\\ \hline
+0.0004 & 0.0008 & BRCA1-IRIS-pre-replication complex & CORUM & CDC6; ORC1 & 990; 4998 & 3 & 3\\ \hline
+0.0004 & 0.0008 & alphaL/beta2 Integrin/ICAM1 & PID & ITGB2; ICAM1 & 3383; 3689 & 3 & 3\\ \hline
+0.0004 & 0.0008 & STAT1 and STAT3 complex with the IRF1 promoter & InnateDB & IRF1; STAT1 & 3659; 6772 & 3 & 3\\ \hline
+0.0004 & 0.0008 & IRF1 and IRF9 complex with the ISG15 promoter & InnateDB & IRF1; IRF9 & 3659; 10379 & 3 & 3\\ \hline
+0.0004 & 0.0008 & STAT1 and IRF9 complex with the ISG15 promoter & InnateDB & IRF9; STAT1 & 6772; 10379 & 3 & 3\\ \hline
+0.0004 & 0.0008 & IFNAR2 forms a complex with IRF9 and STAT2 & InnateDB & IRF9; STAT2 & 6773; 10379 & 3 & 3\\ \hline
+0.0004 & 0.0008 & CASP8 forms a complex with NLRC4 (IPAF) and PYCARD (ASC) & InnateDB & NLRC4; PYCARD & 29108; 58484 & 3 & 3\\ \hline
+0.0004 & 0.0008 & NLRP3 (Cryopyrin) forms a complex with PYCARD (ASC) and CASP1 & InnateDB & PYCARD; NLRP3 & 29108; 114548 & 3 & 3\\ \hline
+0.00129 & 0.00213 & CDK:DDK:MCM10:active pre-replicative complex:CDC45 & Reactome & CDC45; CDC6; ORC1 & 990; 4998; 8318 & 19 & 19\\ \hline
+0.00194 & 0.00297 & TGFB1/TGFBR2/Endoglin/TGFBR1/ALK1/CAV1 & PID & ENG; CAV1 & 857; 2022 & 6 & 6\\ \hline
+0.0027 & 0.00393 & TCR/CD3/MHC II/CD4 & PID & CD4; CD3D & 915; 920 & 9 & 7\\ \hline
+0.00272 & 0.00393 & ECM proteins:Integrin alpha:Integrin beta:Cav-1:Fyn:Shc & INOH & DCN; COL1A1; LUM; ITGB2; CAV1 & 857; 1277; 1634; 3689; 4060 & 83 & 83\\ \hline
+0.00357 & 0.00463 & p-T611 & S730 & S739-FOXM1:MuvB:MYBL2:CCNB1 Gene & Reactome & MYBL2; FOXM1 & 2305; 4605 & 8 & 8\\ \hline
+0.00565 & 0.00688 & ETS_p:responsive element & INOH & SPI1; FLI1 & 2313; 6688 & 10 & 10\\ \hline
+0.0127 & 0.01395 & ECM proteins:Integrin alpha:Integrin beta & INOH & DCN; ITGB2; LUM; COL1A1 & 1277; 1634; 3689; 4060 & 78 & 78\\ \hline
+0.04761 & 0.04857 & GPCR ligand:GPCR & INOH & TGFB2; CD40LG; TMIGD3; IL16; CD86; FASLG & 356; 942; 959; 3603; 7042; 57413 & 227 & 226\\ \hline
+

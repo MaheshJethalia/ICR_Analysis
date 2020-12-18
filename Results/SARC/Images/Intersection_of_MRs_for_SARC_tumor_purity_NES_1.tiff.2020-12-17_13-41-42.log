@@ -1,0 +1,37 @@
+INFO [2020-12-17 13:41:42] $x
+INFO [2020-12-17 13:41:42] list(significant_mrs_with_tumor_purity, significant_mrs_without_tumor_purity)
+INFO [2020-12-17 13:41:42] 
+INFO [2020-12-17 13:41:42] $category.names
+INFO [2020-12-17 13:41:42] c("With TP", "Without TP")
+INFO [2020-12-17 13:41:42] 
+INFO [2020-12-17 13:41:42] $height
+INFO [2020-12-17 13:41:42] [1] 1200
+INFO [2020-12-17 13:41:42] 
+INFO [2020-12-17 13:41:42] $width
+INFO [2020-12-17 13:41:42] [1] 1200
+INFO [2020-12-17 13:41:42] 
+INFO [2020-12-17 13:41:42] $resolution
+INFO [2020-12-17 13:41:42] [1] 300
+INFO [2020-12-17 13:41:42] 
+INFO [2020-12-17 13:41:42] $imagetype
+INFO [2020-12-17 13:41:42] [1] "tiff"
+INFO [2020-12-17 13:41:42] 
+INFO [2020-12-17 13:41:42] $fill
+INFO [2020-12-17 13:41:42] c("#9297FF", "#FFD38F")
+INFO [2020-12-17 13:41:42] 
+INFO [2020-12-17 13:41:42] $fontfamily
+INFO [2020-12-17 13:41:42] [1] "Arial"
+INFO [2020-12-17 13:41:42] 
+INFO [2020-12-17 13:41:42] $alpha
+INFO [2020-12-17 13:41:42] c(0.5, 0.5)
+INFO [2020-12-17 13:41:42] 
+INFO [2020-12-17 13:41:42] $main
+INFO [2020-12-17 13:41:42] [1] "Comparison of Top MRs"
+INFO [2020-12-17 13:41:42] 
+INFO [2020-12-17 13:41:42] $filename
+INFO [2020-12-17 13:41:42] paste0(outputpath, "/Images/Intersection_of_MRs_for_", filename, 
+INFO [2020-12-17 13:41:42]     "_tumor_purity_NES_1.tiff")
+INFO [2020-12-17 13:41:42] 
+INFO [2020-12-17 13:41:42] $output
+INFO [2020-12-17 13:41:42] [1] TRUE
+INFO [2020-12-17 13:41:42] 

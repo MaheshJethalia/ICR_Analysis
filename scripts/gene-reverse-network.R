@@ -18,8 +18,8 @@ aracne2 = function(mexp,from,to,nperm=1000) {
   ra0 = rates[pval==0]
   pval[pval==0] = sapply(1:length(mi0),function(i) pexp(mi0[i],rate=ra0[i],lower.tail = F))
   
-  #pval.fdr = p.adjust(pval,method = "fdr")
-  #mi[pval.fdr<=0.05] = 0
+  pval.fdr = p.adjust(pval,method = "fdr")
+  mi[pval.fdr<=0.05] = 0
  
   return(list(MI=mi,PVAL=pval,NPERM=nperm))
 }
