@@ -15,7 +15,7 @@ require(limma)
 require(GSVA)
 registerDoMC(20)
 
-setwd('/export/cse/rmall/Network_Analysis/PanCancer_Immunophenotype/Old_Files/ICR_All_Info/scripts/')
+#setwd('/export/cse/rmall/Network_Analysis/PanCancer_Immunophenotype/Old_Files/ICR_All_Info/scripts/')
 setwd('.')
 
 source('gene-reverse-network.R')

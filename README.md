@@ -4,9 +4,10 @@ Each result figure will appear in Results/Revised_Figures/Revised_Figure_(v2)_i.
 
 Text results are provided in Results/Revised_Text_Results/ folder. Similarly, figures are provided in Results/Revised_Figures/ folder.
 
-The data used for all the experiments is also available at: Mall, Raghvendra (2020), “Transcriptomic Dataset for Network based identification of key Master Regulators for Immunologic Constant of Rejection”, Mendeley Data, V1, doi: 10.17632/d9ffb7kkzt.3
+The data used for all the experiments is also available at: Mall, Raghvendra (2020), “Transcriptomic Dataset for Network based identification of key Master Regulators for Immunologic Constant of Rejection”, Mendeley Data, V3, doi: 10.17632/d9ffb7kkzt.3
 
-#Data should be downloaded and used as 'Data' folder within main ICR_Analysis repository for running R scripts.
+#Data should be downloaded and all its content should be added to the 'Data' folder within main ICR_Analysis repository for running R scripts.
 
-In the Data/Others/ folder, please gunzip the me_net_full.Rdata.gz file
+In the Data/Others/ folder, please gunzip the me_net_full.Rdata.gz file.
 
+In the Data/PRECOG/ folder, please put the es_list1.rds and es_list2.rds files for performing the validation on PRECOG repository.

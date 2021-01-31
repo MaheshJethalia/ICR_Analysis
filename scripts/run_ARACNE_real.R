@@ -4,7 +4,7 @@ library(foreach)
 library(igraph)
 registerDoMC(48)
 
-setwd('/export/cse/rmall/Network_Analysis/PanCancer_Immunophenotype/Old_Files/ICR_All_Info/scripts/')
+#setwd('/export/cse/rmall/Network_Analysis/PanCancer_Immunophenotype/Old_Files/ICR_All_Info/scripts/')
 setwd('.')
 
 source('get_functions.R')

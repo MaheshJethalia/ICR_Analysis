@@ -13,7 +13,7 @@ library(gprofiler2)
 #Load latest version of heatmap.3 function
 source_url("https://raw.githubusercontent.com/obigriffith/biostar-tutorials/master/Heatmaps/heatmap.3.R")
 
-setwd('/export/cse/rmall/Network_Analysis/PanCancer_Immunophenotype/Old_Files/ICR_All_Info/scripts/')
+#setwd('/export/cse/rmall/Network_Analysis/PanCancer_Immunophenotype/Old_Files/ICR_All_Info/scripts/')
 setwd('.')
 
 source('gene-reverse-network.R')
@@ -68,160 +68,163 @@ for (i in 1:length(cancers))
 
 #Analyze the PRECOG dataset
 ##########################################################################################################
-#predictions_df <- readRDS("/export/cse/rmall/Network_Analysis/PanCancer_Immunophenotype/Data/PRECOG/predictors_all_merged3.rds")
-#expr_list1 <- readRDS("/export/cse/rmall/Network_Analysis/PanCancer_Immunophenotype/Data/PRECOG/es_list1.rds")
-#expr_list2 <- readRDS("/export/cse/rmall/Network_Analysis/PanCancer_Immunophenotype/Data/PRECOG/es_list2.rds")
-#mapping_df <- read.table("../Data/PRECOG/Mapping_GEO.csv",header=TRUE,sep=",")
-#mapping_df <- convert_character_vector(mapping_df)
+predictions_df <- readRDS("../Data/PRECOG/predictors_all_merged3.rds")
+expr_list1 <- readRDS("../Data/PRECOG/es_list1.rds")
+expr_list2 <- readRDS("../Data/PRECOG/es_list2.rds")
+mapping_df <- read.table("../Data/PRECOG/Mapping_GEO.csv",header=TRUE,sep=",")
+mapping_df <- convert_character_vector(mapping_df)
 
-# #Get only those samples for which cancer type is available
-# cancer_list <- NULL
-# rev_predictions_df <- predictions_df[predictions_df$Study %in% mapping_df$Study,]
-# for (i in 1:nrow(rev_predictions_df))
-# {
-#   study_type <- rev_predictions_df$Study[i]
-#   cancer_type <- mapping_df[mapping_df$Study==study_type,]$Cancer  
-#   cancer_list <- c(cancer_list,cancer_type)
-# }
-# rev_predictions_df$Cancer <- cancer_list
-# 
-# #Get largest cohort for each cancer type
-# geo_cancer_mat <- as.matrix(table(rev_predictions_df$Study,rev_predictions_df$Cancer))
-# unique_cancers <- colnames(geo_cancer_mat)
-# geo_cancer_edgelist <- NULL
-# for (i in 1:length(unique_cancers))
-# {
-#   id <- which.max(geo_cancer_mat[,colnames(geo_cancer_mat)==unique_cancers[i]])
-#   geo_id <- rownames(geo_cancer_mat)[id]
-#   sample_size <- geo_cancer_mat[geo_id,unique_cancers[i]]
-#   temp <- cbind(geo_id,unique_cancers[i],sample_size)
-#   geo_cancer_edgelist <- rbind(geo_cancer_edgelist,temp)
-# }
-# geo_cancer_edgelist <- as.data.frame(geo_cancer_edgelist)
-# colnames(geo_cancer_edgelist) <- c("GEO_Accession_Id","Cancer","Sample_Size")
-# geo_cancer_edgelist$GEO_Accession_Id <- as.character(as.vector(geo_cancer_edgelist$GEO_Accession_Id))
-# geo_cancer_edgelist$Cancer <- as.character(as.vector(geo_cancer_edgelist$Cancer))
-# geo_cancer_edgelist$Sample_Size <- as.numeric(as.vector(geo_cancer_edgelist$Sample_Size))
-# 
-# geo_cancer_edgelist <- geo_cancer_edgelist[geo_cancer_edgelist$Sample_Size>100,]
-# 
-# final_expr_list <- list()
-# k <- 1
-# for (i in 1:nrow(geo_cancer_edgelist))
-# {
-#   geo_id <- geo_cancer_edgelist$GEO_Accession_Id[i]
-#   if (sum(names(expr_list1) %in% geo_id)>0)
-#   {
-#     id <- which(names(expr_list1)==geo_id)
-#     final_expr_list[[k]] <- expr_list1[[id]]
-#   }
-#   else if (sum(names(expr_list2) %in% geo_id)>0)
-#   {
-#     id <- which(names(expr_list2)==geo_id)
-#     final_expr_list[[k]] <- expr_list2[[id]]
-#   }
-#   k <- k + 1
-# }
-# names(final_expr_list) <- geo_cancer_edgelist$GEO_Accession_Id
-# 
-# #Create the expression dataset and ICR High and Low indices per cancer type
-# for (i in 1:length(final_expr_list))
-# {
-#   #Get GEO Id and Cancer Id
-#   geo_id <- names(final_expr_list[i])
-#   cancer_type <- geo_cancer_edgelist[geo_cancer_edgelist$GEO_Accession_Id==geo_id,]$Cancer
-#   
-#   #Get ICR Scores and sample ids of samples in dataset
-#   icr_scores <- rev_predictions_df[rev_predictions_df$Study==geo_id & rev_predictions_df$Cancer==cancer_type,]$ICR
-#   sample_ids <- as.character(rev_predictions_df[rev_predictions_df$Study==geo_id & rev_predictions_df$Cancer==cancer_type,]$ID)
-#   
-#   #Get ICR High and ICR Low cutoffs
-#   quantiles_icr_scores <- quantile(icr_scores)
-#   icr_low_cutoff <- quantiles_icr_scores[[2]]
-#   icr_high_cutoff <- quantiles_icr_scores[[4]]
-#   
-#   #Get ICR High and ICR Low scores
-#   icr_low_ids <- which(icr_scores<icr_low_cutoff)
-#   icr_high_ids <- which(icr_scores>icr_high_cutoff)
-#   
-#   #Get the expression matrix from GEO accession
-#   if (i==3)
-#   {
-#     sample_names <- strsplit(colnames(final_expr_list[[i]]),"_")
-#     rev_sample_names <- NULL
-#     for (l in 1:length(sample_names))
-#     {
-#       rev_sample_names <- c(rev_sample_names,sample_names[[l]][1])
-#     }
-#     colnames(final_expr_list[[i]]) <- rev_sample_names
-#   }
-#   expr_matrix <- exprs(final_expr_list[[i]])[,sample_ids]
-#   
-#   #Map gene ids to gene names (HGNC symbols)
-#   gene_ids <- rownames(expr_matrix)
-#   
-#   if (i==6)
-#   {
-#     rev_gene_ids <- rep(0,length(gene_ids))
-#     for (l in 1:length(gene_ids))
-#     {
-#       gene_id <- unlist(strsplit(gene_ids[l]," "))[1]
-#       rev_gene_ids[l] <- as.numeric(gene_id)
-#     }
-#     query_out <- gconvert(query= rev_gene_ids, organism = "hsapiens", numeric_ns="ENTREZGENE_ACC",
-#                           target = "HGNC", mthreshold = Inf, filter_na = TRUE)
-#     gene_ids <- rev_gene_ids
-#   }else
-#   {
-#     query_out <- gconvert(query = gene_ids, organism = "hsapiens",
-#                           target="HGNC", mthreshold = Inf, filter_na = TRUE)
-#   }
-#   
-#   gene_names <- NULL
-#   for (j in 1:length(gene_ids))
-#   {
-#     if (gene_ids[j] %in% query_out$input)
-#     {
-#       gene_name <- query_out[query_out$input==gene_ids[j],]$name[1]
-#     }
-#     else{
-#       gene_name <- "NA"
-#     }
-#     gene_names <- c(gene_names,gene_name)
-#   }
-#   gene_indices <- which(gene_names!="NA")
-#   rev_expr_matrix <- expr_matrix[gene_indices,]
-#   rownames(rev_expr_matrix) <- gene_names[gene_indices]
-#   
-#   #Get revised expression matrix with ordered ICR High and ICR Low
-#   D <- rev_expr_matrix[,c(icr_high_ids,icr_low_ids)]
-#   load(paste0("Results/",cancer_type,"/Adjacency_Matrix/",cancer_type,"_Full_Correlation_matrix.Rdata"))
-#   load(paste0("Results/",cancer_type,"/Adjacency_Matrix/",cancer_type,"_Full_regulon_FGSEA.Rdata"))
-#   
-#   #Revise the regulons with TFs present in expression matrix and targets present in expression matrix
-#   all_tfs <- names(regulon_sets)
-#   all_targets <- rownames(D)
-#   rev_tfs <- all_tfs[all_tfs %in% all_targets]
-#   rev_regulon_sets <- list()
-#   k <- 1
-#   for (tf in rev_tfs)
-#   {
-#     id <- which(all_tfs==tf)
-#     rev_targets <- regulon_sets[[id]][regulon_sets[[id]] %in% all_targets]
-#     rev_regulon_sets[[k]] <- rev_targets
-#     k <- k+1
-#   }
-#   names(rev_regulon_sets) <- rev_tfs
-#   rev_corr_matrix <- corr_matrix[,which(colnames(corr_matrix) %in% all_targets)]
-#   
-#   #Generate the activity matrix
-#   amat <- activity_mc(mexp = D, cormat = rev_corr_matrix, tflist = names(rev_regulon_sets), tau = 0.0)
-#   save(list=c('amat'),file=paste0("Data/PRECOG/",cancer_type,"/",cancer_type,"_Full_Activity_matrix_FGSEA.Rdata"))
-#   icr_info <- c(rep("ICR High",length(icr_high_ids)),rep("ICR Low",length(icr_low_ids)))
-#   write.table(icr_info,paste0("Data/PRECOG/",cancer_type,"/",cancer_type,"_ICR_Info.csv"),row.names=T,col.names=F,quote=F,sep=",")
-# }
+#Get only those samples for which cancer type is available
+cancer_list <- NULL
+rev_predictions_df <- predictions_df[predictions_df$Study %in% mapping_df$Study,]
+for (i in 1:nrow(rev_predictions_df))
+{
+  study_type <- rev_predictions_df$Study[i]
+  cancer_type <- mapping_df[mapping_df$Study==study_type,]$Cancer  
+  cancer_list <- c(cancer_list,cancer_type)
+}
+rev_predictions_df$Cancer <- cancer_list
+ 
+#Get largest cohort for each cancer type
+geo_cancer_mat <- as.matrix(table(rev_predictions_df$Study,rev_predictions_df$Cancer))
+unique_cancers <- colnames(geo_cancer_mat)
+geo_cancer_edgelist <- NULL
+for (i in 1:length(unique_cancers))
+{
+   id <- which.max(geo_cancer_mat[,colnames(geo_cancer_mat)==unique_cancers[i]])
+   geo_id <- rownames(geo_cancer_mat)[id]
+   sample_size <- geo_cancer_mat[geo_id,unique_cancers[i]]
+   temp <- cbind(geo_id,unique_cancers[i],sample_size)
+   geo_cancer_edgelist <- rbind(geo_cancer_edgelist,temp)
+}
+geo_cancer_edgelist <- as.data.frame(geo_cancer_edgelist)
+colnames(geo_cancer_edgelist) <- c("GEO_Accession_Id","Cancer","Sample_Size")
+geo_cancer_edgelist$GEO_Accession_Id <- as.character(as.vector(geo_cancer_edgelist$GEO_Accession_Id))
+geo_cancer_edgelist$Cancer <- as.character(as.vector(geo_cancer_edgelist$Cancer))
+geo_cancer_edgelist$Sample_Size <- as.numeric(as.vector(geo_cancer_edgelist$Sample_Size))
 
-#Get the activity from multiple PRECOG datasets
+#Filter cancers with at least 100 samples 
+geo_cancer_edgelist <- geo_cancer_edgelist[geo_cancer_edgelist$Sample_Size>100,]
+ 
+final_expr_list <- list()
+k <- 1
+for (i in 1:nrow(geo_cancer_edgelist))
+{
+   geo_id <- geo_cancer_edgelist$GEO_Accession_Id[i]
+   if (sum(names(expr_list1) %in% geo_id)>0)
+   {
+     id <- which(names(expr_list1)==geo_id)
+     final_expr_list[[k]] <- expr_list1[[id]]
+   }
+   else if (sum(names(expr_list2) %in% geo_id)>0)
+   {
+     id <- which(names(expr_list2)==geo_id)
+     final_expr_list[[k]] <- expr_list2[[id]]
+   }
+   k <- k + 1
+}
+names(final_expr_list) <- geo_cancer_edgelist$GEO_Accession_Id
+ 
+#Create the expression dataset and ICR High and Low indices per cancer type
+for (i in 1:length(final_expr_list))
+{
+   #Get GEO Id and Cancer Id
+   geo_id <- names(final_expr_list[i])
+   cancer_type <- geo_cancer_edgelist[geo_cancer_edgelist$GEO_Accession_Id==geo_id,]$Cancer
+   
+   #Get ICR Scores and sample ids of samples in dataset
+   icr_scores <- rev_predictions_df[rev_predictions_df$Study==geo_id & rev_predictions_df$Cancer==cancer_type,]$ICR
+   sample_ids <- as.character(rev_predictions_df[rev_predictions_df$Study==geo_id & rev_predictions_df$Cancer==cancer_type,]$ID)
+   
+   #Get ICR High and ICR Low cutoffs
+   quantiles_icr_scores <- quantile(icr_scores)
+   icr_low_cutoff <- quantiles_icr_scores[[2]]
+   icr_high_cutoff <- quantiles_icr_scores[[4]]
+   
+   #Get ICR High and ICR Low scores
+   icr_low_ids <- which(icr_scores<icr_low_cutoff)
+   icr_high_ids <- which(icr_scores>icr_high_cutoff)
+   
+   #Get the expression matrix from GEO accession
+   if (i==3)
+   {
+     sample_names <- strsplit(colnames(final_expr_list[[i]]),"_")
+     rev_sample_names <- NULL
+     for (l in 1:length(sample_names))
+     {
+       rev_sample_names <- c(rev_sample_names,sample_names[[l]][1])
+     }
+     colnames(final_expr_list[[i]]) <- rev_sample_names
+   }
+   expr_matrix <- exprs(final_expr_list[[i]])[,sample_ids]
+   
+   #Map gene ids to gene names (HGNC symbols)
+   gene_ids <- rownames(expr_matrix)
+   
+   if (i==6)
+   {
+     rev_gene_ids <- rep(0,length(gene_ids))
+     for (l in 1:length(gene_ids))
+     {
+       gene_id <- unlist(strsplit(gene_ids[l]," "))[1]
+       rev_gene_ids[l] <- as.numeric(gene_id)
+     }
+     query_out <- gconvert(query= rev_gene_ids, organism = "hsapiens", numeric_ns="ENTREZGENE_ACC",
+                           target = "HGNC", mthreshold = Inf, filter_na = TRUE)
+     gene_ids <- rev_gene_ids
+   }else
+   {
+     query_out <- gconvert(query = gene_ids, organism = "hsapiens",
+                           target="HGNC", mthreshold = Inf, filter_na = TRUE)
+   }
+   
+   gene_names <- NULL
+   for (j in 1:length(gene_ids))
+   {
+     if (gene_ids[j] %in% query_out$input)
+     {
+       gene_name <- query_out[query_out$input==gene_ids[j],]$name[1]
+     }
+     else{
+       gene_name <- "NA"
+     }
+     gene_names <- c(gene_names,gene_name)
+   }
+   gene_indices <- which(gene_names!="NA")
+   rev_expr_matrix <- expr_matrix[gene_indices,]
+   rownames(rev_expr_matrix) <- gene_names[gene_indices]
+   
+   #Get revised expression matrix with ordered ICR High and ICR Low
+   D <- rev_expr_matrix[,c(icr_high_ids,icr_low_ids)]
+   system(paste0("gunzip ../Results/",cancer_type,"/Adjacency_Matrix/",cancer_type,"_Full_Correlation_matrix.Rdata.gz"))
+   load(paste0("../Results/",cancer_type,"/Adjacency_Matrix/",cancer_type,"_Full_Correlation_matrix.Rdata"))
+   load(paste0("../Results/",cancer_type,"/Adjacency_Matrix/",cancer_type,"_Full_regulon_FGSEA.Rdata"))
+   system(paste0("gzip ../Results/",cancer_type,"/Adjacency_Matrix/",cancer_type,"_Full_Correlation_matrix.Rdata"))
+   
+   #Revise the regulons with TFs present in expression matrix and targets present in expression matrix
+   all_tfs <- names(regulon_sets)
+   all_targets <- rownames(D)
+   rev_tfs <- all_tfs[all_tfs %in% all_targets]
+   rev_regulon_sets <- list()
+   k <- 1
+   for (tf in rev_tfs)
+   {
+     id <- which(all_tfs==tf)
+     rev_targets <- regulon_sets[[id]][regulon_sets[[id]] %in% all_targets]
+     rev_regulon_sets[[k]] <- rev_targets
+     k <- k+1
+   }
+   names(rev_regulon_sets) <- rev_tfs
+   rev_corr_matrix <- corr_matrix[,which(colnames(corr_matrix) %in% all_targets)]
+   
+   #Generate the activity matrix
+   amat <- activity_mc(mexp = D, cormat = rev_corr_matrix, tflist = names(rev_regulon_sets), tau = 0.0)
+   save(list=c('amat'),file=paste0("../Data/PRECOG/",cancer_type,"/",cancer_type,"_Full_Activity_matrix_FGSEA.Rdata"))
+   icr_info <- c(rep("ICR High",length(icr_high_ids)),rep("ICR Low",length(icr_low_ids)))
+   write.table(icr_info,paste0("../Data/PRECOG/",cancer_type,"/",cancer_type,"_ICR_Info.csv"),row.names=T,col.names=F,quote=F,sep=",")
+}
+
+#Get the activity for multiple PRECOG datasets and illustrate the activity patterns for MR specific to ICR-High and ICR-Low
 ########################################################################################################################
 precog_cancers <- c("BLCA","BRCA","COAD","GBM","HNSC","LUAD","OV","SKCM")
 icr_type <- c("ICR Enabled","ICR Enabled","ICR Neutral","ICR Neutral","ICR Enabled","ICR Neutral","ICR Neutral","ICR Enabled")
@@ -351,7 +354,7 @@ hc.rows <- c(hc.rows.icr_high$order,(length(all_hot_mr_indices)+hc.rows.icr_low$
 hc_row_list <- list(hc.rows.icr_high,hc.rows.icr_low)
 hc_row <- .merge_hclust(hc_row_list)
 
-#Main Plotting Function
+#Main Plotting Function for plotting all ICR-Low and ICR-High specific MRs across various PRECOG datasets
 pdf("../Results/Revised_Figures/Pdfs/Heatmap_All_MRs_PRECOG_Figure_Revised(v2)_5C.pdf",height = 13, width=15, pointsize = 14)
 par(bg="white")
 par(fg="black",col.axis="black",col.main="black",col.lab="black", cex.main=2.0)
@@ -373,3 +376,4 @@ activity_df$Mean1 <- round(activity_df$Mean1,3)
 activity_df$Mean2 <- round(activity_df$Mean2,3)
 activity_df$FC_Mean <- round(activity_df$FC_Mean,3)
 write.table(activity_df,"../Results/Revised_Text_Results/Diff_MRS_Activity_PRECOG_Revised(v2)_Table_13.csv",row.names=T,col.names=T,quote=F,sep=",")
+
