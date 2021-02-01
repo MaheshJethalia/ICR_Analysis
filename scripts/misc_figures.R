@@ -13,7 +13,7 @@ library(gprofiler2)
 #Load latest version of heatmap.3 function
 source_url("https://raw.githubusercontent.com/obigriffith/biostar-tutorials/master/Heatmaps/heatmap.3.R")
 
-#setwd('/export/cse/rmall/Network_Analysis/PanCancer_Immunophenotype/Old_Files/ICR_All_Info/scripts/')
+setwd('/export/cse/rmall/Network_Analysis/PanCancer_Immunophenotype/Old_Files/ICR_All_Info/scripts/')
 setwd('.')
 
 source('gene-reverse-network.R')
@@ -224,7 +224,7 @@ for (i in 1:length(final_expr_list))
    write.table(icr_info,paste0("../Data/PRECOG/",cancer_type,"/",cancer_type,"_ICR_Info.csv"),row.names=T,col.names=F,quote=F,sep=",")
 }
 
-#Get the activity for multiple PRECOG datasets and illustrate the activity patterns for MR specific to ICR-High and ICR-Low
+#Get the activity from multiple PRECOG datasets
 ########################################################################################################################
 precog_cancers <- c("BLCA","BRCA","COAD","GBM","HNSC","LUAD","OV","SKCM")
 icr_type <- c("ICR Enabled","ICR Enabled","ICR Neutral","ICR Neutral","ICR Enabled","ICR Neutral","ICR Neutral","ICR Enabled")
@@ -354,7 +354,7 @@ hc.rows <- c(hc.rows.icr_high$order,(length(all_hot_mr_indices)+hc.rows.icr_low$
 hc_row_list <- list(hc.rows.icr_high,hc.rows.icr_low)
 hc_row <- .merge_hclust(hc_row_list)
 
-#Main Plotting Function for plotting all ICR-Low and ICR-High specific MRs across various PRECOG datasets
+#Main Plotting Function
 pdf("../Results/Revised_Figures/Pdfs/Heatmap_All_MRs_PRECOG_Figure_Revised(v2)_5C.pdf",height = 13, width=15, pointsize = 14)
 par(bg="white")
 par(fg="black",col.axis="black",col.main="black",col.lab="black", cex.main=2.0)
@@ -377,3 +377,58 @@ activity_df$Mean2 <- round(activity_df$Mean2,3)
 activity_df$FC_Mean <- round(activity_df$FC_Mean,3)
 write.table(activity_df,"../Results/Revised_Text_Results/Diff_MRS_Activity_PRECOG_Revised(v2)_Table_13.csv",row.names=T,col.names=T,quote=F,sep=",")
 
+
+#Make the heatmap for the set of deferentially active MRs identified for each cancer (ICR-Low vs ICR-High) on PRECOG datasets
+###########################################################################################################################
+precog_cancers <- c("BLCA","BRCA","COAD","GBM","HNSC","LUAD","OV","SKCM")
+inputpath <- "../Data/PRECOG/"
+
+for (i in 1:length(precog_cancers))
+{
+   cancer_type <- precog_cancers[i]
+   load(paste0(inputpath,cancer_type,"/",cancer_type,"_Full_Activity_matrix_FGSEA.Rdata"))
+   load(paste0(inputpath,cancer_type,"/",cancer_type,"_Full_TopMR_Info_FGSEA_BC_NES_1.Rdata"))
+   load(paste0(inputpath,cancer_type,"/",cancer_type,"_Full_Activity_matrix_FGSEA.Rdata"))
+   table_indices <- read.table(paste0(inputpath,cancer_type,"/",cancer_type,"_ICR_Info.csv"),header=FALSE,sep=",")
+   table_indices$V2 <- as.character(as.vector(table_indices$V2))
+   high_index_last <- sum(table_indices$V2=="ICR High")
+   low_index_last <- nrow(table_indices)
+   high_indices <- table_indices[table_indices$V2=="ICR High",]$V1
+   low_indices <- table_indices[table_indices$V2=="ICR Low",]$V1
+   
+   amat_to_use <- amat  
+   amat_to_use[amat_to_use>0] <- amat_to_use[amat_to_use>0]/max(amat_to_use)
+   amat_to_use[amat_to_use<0] <- amat_to_use[amat_to_use<0]/abs(min(amat_to_use))
+   samples <- dim(amat_to_use)[2]
+   
+   all_mrs_present <- topmr_info[topmr_info$pathway %in% rownames(amat_to_use),]$pathway
+   
+   #Get the activity matrix for these differential MRs per cancer with the phenotype information
+   new_mr_activity_matrix <- as.matrix(amat[all_mrs_present,c(high_indices,low_indices)])
+   rownames(new_mr_activity_matrix)
+   colnames(new_mr_activity_matrix) <- NULL
+   
+   colcol <- matrix(0,nrow=ncol(new_mr_activity_matrix),ncol=1)
+   high_ids <- c(1:length(high_indices));
+   low_ids <- c((length(high_indices)+1):length(colcol))
+   colcol[high_ids,1] <- "yellow"
+   colcol[low_ids,1] <- "green"
+   colnames(colcol) <- "ICR Phenotype"
+   hc_high.cols <- hclust(dist(t(new_mr_activity_matrix[,high_ids])),method='ward.D')
+   hc_low.cols <- hclust(dist(t(new_mr_activity_matrix[,low_ids])),method='ward.D')
+   hc.cols <- c(hc_high.cols$order,length(high_ids)+hc_low.cols$order);
+   hc.rows <- hclust(dist(new_mr_activity_matrix),method='ward.D')
+   
+   #Make the plot of activity matrix clustered by hot vs cold immune response
+   #=================================================================================================
+   pdf(paste0("../Results/",cancer_type,"/Images/",cancer_type,"_PRECOG_Activity_Matrix.pdf"),pointsize=9,height=9,width=15)
+   par(bg="white")
+   par(fg="black",col.axis="black",col.main="black",col.lab="black", cex.main=2.0, cex = 2.5)
+   new_mr_activity_matrix[new_mr_activity_matrix <= quantile(new_mr_activity_matrix, 0.05)] <- quantile(new_mr_activity_matrix, 0.05)
+   new_mr_activity_matrix[new_mr_activity_matrix >= quantile(new_mr_activity_matrix, 0.95)] <- quantile(new_mr_activity_matrix, 0.95)
+   heatmap.3(new_mr_activity_matrix[hc.rows$order,hc.cols], Rowv=TRUE, Colv=FALSE, col = bluered(100), scale="none", main= paste0("Master Regulator Activity for ",cancer_type," (PRECOG)"),
+             xlab = "TCGA Samples", ylab="Top MRs", dendrogram = "row", key = TRUE, density.info = "none", 
+             KeyValueName = "Activity Value", ColSideColors = colcol, ColSideColorsSize=2,
+             margins = c(6,6), useRaster = FALSE, cexRow = 0.6, cexCol = 2.0)
+   dev.off()
+}

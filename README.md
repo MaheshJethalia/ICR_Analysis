@@ -11,3 +11,5 @@ The data used for all the experiments is also available at: Mall, Raghvendra (20
 In the Data/Others/ folder, please gunzip the me_net_full.Rdata.gz file.
 
 In the Data/PRECOG/ folder, please put the es_list1.rds and es_list2.rds files for performing the validation on PRECOG repository.
+
+Run the misc_figures.R in scripts/ folder for validation results on the PRECOG repository.
