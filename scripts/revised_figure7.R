@@ -186,8 +186,8 @@ hc_row <- .merge_hclust(hc_row_list)
 #rownames(rlab2) <- "ICR MRs"
 #Activity_Matrix <- Activity_Matrix[hc.rows,]
 
-#Main Plotting Function
-pdf("../Results/Revised_Figures/Pdfs/Heatmap_All_MRs_NeutralCancers_Figure_Revised(v2)_5B.pdf",height = 13, width=15, pointsize = 14)
+#Main Plotting Function for Figure 7A
+pdf("../Results/Revised_Figures/Pdfs/Heatmap_All_MRs_NeutralCancers_Figure_Revised(v2)_7A.pdf",height = 13, width=15, pointsize = 14)
 par(bg="white")
 par(fg="black",col.axis="black",col.main="black",col.lab="black", cex.main=2.0)
 p1 <- heatmap.3(Activity_Matrix, scale="none", dendrogram="both", margins=c(4,20),
