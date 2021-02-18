@@ -13,3 +13,5 @@ In the Data/Others/ folder, please gunzip the me_net_full.Rdata.gz file.
 In the Data/PRECOG/ folder, please put the es_list1.rds and es_list2.rds files for performing the validation on PRECOG repository.
 
 Run the misc_figures.R in scripts/ folder for validation results on the PRECOG repository.
+
+Run the ICR_Consensus_Classification.R followed by High_Medium_Low_ICR_classification.R in scripts/ folder to get the ICR-High, ICR-Medium and ICR-Low labels for each cancer sample per cancer type.
